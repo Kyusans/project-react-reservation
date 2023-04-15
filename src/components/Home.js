@@ -3,7 +3,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { Button, Container } from "react-bootstrap";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import ScheduleForm from './ScheduleForm';
+import ReservationForm from './ReservationForm';
 import ViewSchedule from './ViewSchedule';
 
 function Home() {
@@ -74,12 +74,9 @@ function Home() {
           eventClick={handleEventClick}
         />
       </Container>
-      <ScheduleForm show={showReserveModal} onHide={hideReserveModal} />
+      <ReservationForm show={showReserveModal} onHide={hideReserveModal} />
       <ViewSchedule show={showViewModal} onHide={hideViewModal} schedId={schedId} />
     </>
   );
 }
-
 export default Home;
-
-

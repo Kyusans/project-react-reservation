@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AlertScript from "./AlertScript";
 
-const ScheduleForm = (props) => {
+const ReservationForm = (props) => {
   const {show, onHide} = props;
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
@@ -13,8 +13,7 @@ const ScheduleForm = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [color, setColor] = useState('blue');
-  const [validated, setValidated] = useState(false);
-  
+  const [validated, setValidated] = useState(false); 
   //for alert
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertVariant, setAlertVariant] = useState("");
@@ -24,10 +23,8 @@ const ScheduleForm = (props) => {
 		setAlertVariant(variantAlert);
 		setAlertMessage(messageAlert);
 	}
-
   const formValidation = (e) =>{
     const form = e.currentTarget;
-
     if(form.checkValidity() === false){
       e.preventDefault();
       e.stopPropagation();
@@ -42,7 +39,6 @@ const ScheduleForm = (props) => {
     }
     setValidated(true);
   }
-
   const addSchedule = () =>{
     const url = sessionStorage.getItem("url") + "schedule.php";
     const jsonData = {name: name, description: description, startDate: startDate, endDate: endDate, title: title, color: color}
@@ -51,20 +47,20 @@ const ScheduleForm = (props) => {
     formData.append("operation", "addSchedule");
     axios({url: url, data: formData, method: "post"})
     .then((res) =>{
-      if(res.data === 1){
+      if(res.data === 2){
+        getAlert("danger", "Invalid date range: end date cannot be earlier than start date.")
+      }else if(res.data === 1){
         getAlert("success", "Schedule saved!");
-        setTimeout(() => {
-          handleOnHide();
-        }, 500);
+        setTimeout(() => {handleOnHide();}, 500);
       }else{
         getAlert("danger", "The selected dates conflict with an existing schedule.");
+        console.log(res.data);
       }
     })
     .catch((err)=>{
       getAlert("danger", "There was an unexpected error: " + err);
     })
   }
-
   function handleOnHide(){
     setShowAlert(false);
     setTitle("");
@@ -72,8 +68,9 @@ const ScheduleForm = (props) => {
     setDescription("");
     setValidated(false);
     onHide();
+    setStartDate(new Date());
+    setEndDate(new Date());
   }
-  
   return ( 
     <>
       <Modal show={show} onHide={handleOnHide}>
@@ -81,7 +78,6 @@ const ScheduleForm = (props) => {
           <h3>Add Reservation</h3>
         </Modal.Header>
         <Form noValidate validated={validated} onSubmit={formValidation}>
-
         <Modal.Body>
         <AlertScript show={showAlert} variant={alertVariant} message={alertMessage} />
         <Form.Group className="mt-1 mb-3">
@@ -90,14 +86,12 @@ const ScheduleForm = (props) => {
               <Form.Control.Feedback type="invalid">This field is required</Form.Control.Feedback>
             </FloatingLabel>
           </Form.Group>
-
           <Form.Group className="mt-1 mb-3">
             <FloatingLabel label="Name">
               <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required/>
               <Form.Control.Feedback type="invalid">This field is required</Form.Control.Feedback>
             </FloatingLabel>
           </Form.Group>
-
           <Form.Group className="mb-3">
             <FloatingLabel label="Description">
               <Form.Control 
@@ -116,7 +110,7 @@ const ScheduleForm = (props) => {
           </Form.Group>
           <Form.Group className="mb-3">
             <div className="color-dropdown">
-              <Form.Select aria-label="Default select example" value={color} onChange={(event) => setColor(event.target.value)} required defaultValue="" >
+              <Form.Select aria-label="Default select example" value={color} onChange={(event) => setColor(event.target.value)} required>
                 <option value="">Select a color</option>
                 <option value="#000000">Black</option>
                 <option value="#ff0000">Red</option>
@@ -128,38 +122,27 @@ const ScheduleForm = (props) => {
               </Form.Select>
             </div>
           </Form.Group>
-
           <Form.Group>
             <Row>
               <Col>
                 <Form.Label>Start date:</Form.Label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={date => setStartDate(date)}
-                  dateFormat="yyyy/MM/dd"
-                />
+                <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd"/>
               </Col>
               <Col>
                 <Form.Label>End date:</Form.Label>
-                <DatePicker
-                  selected={endDate}
-                  onChange={date => setEndDate(date)}
-                  dateFormat="yyyy/MM/dd"
-                />
+                <DatePicker selected={endDate} onChange={date => setEndDate(date)} dateFormat="yyyy/MM/dd"/>
               </Col>
             </Row>     
           </Form.Group>
         </Modal.Body>
-        
         <Modal.Footer>
           <Button onClick={handleOnHide} variant="outline-secondary">Close</Button>
           <Button type="submit" variant="outline-primary">Submit</Button>
         </Modal.Footer>
-
         </Form>
       </Modal>
     </>
   );
 }
  
-export default ScheduleForm;
+export default ReservationForm;

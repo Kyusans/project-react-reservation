@@ -48,13 +48,8 @@ code {
   transform: translate(-50%, -50%);
 }
 
-.form-control{
-  width: 250px !important;
-  margin: 0 auto;
-}
-
 .button-large {
-  width: 250px !important;
+  width: 270px !important;
 }
 
 .text-small {
