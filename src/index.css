@@ -131,3 +131,7 @@ code {
   background-color: white;
 }
 
+.link-text{
+  color: white !important;
+  margin-right: 10px;
+}
