@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReservationForm from './ReservationForm';
 import ViewSchedule from './ViewSchedule';
+import moment from "moment";
 
 function Home() {
   const [schedId, setSchedId] = useState("");
@@ -26,24 +27,25 @@ function Home() {
     const url = sessionStorage.getItem("url") + "schedule.php";
     const formData = new FormData();
     formData.append("operation", "getSchedule");
-    axios({url: url, data: formData, method: "post"})
-      .then((res) =>{
+    axios({ url: url, data: formData, method: "post" })
+      .then((res) => {
         const eventsData = res.data.map((items) => ({
           id: items.sched_id,
           title: items.sched_title,
           start: items.sched_startDate,
-          end: items.sched_endDate,
+          end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
           color: items.sched_color,
         }));
         setEvents(eventsData);
       })
-      .catch((err)=>{
+      .catch((err) => {
         alert("There was an unexpected error: " + err);
-      })
+      });
   };
   
   function handleEventClick(info) {
-    setSchedId(info.event.id)
+    console.log("Event: " + JSON.stringify(events));
+    setSchedId(info.event.id);
     console.log("sched id: " + schedId);
     openViewModal();
   };
@@ -70,6 +72,7 @@ function Home() {
           plugins={[dayGridPlugin]}
           initialView='dayGridMonth'
           events={events}
+
           eventContent={renderEventContent}
           eventClick={handleEventClick}
         />
