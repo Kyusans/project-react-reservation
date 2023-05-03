@@ -44,9 +44,7 @@ function Home() {
   };
   
   function handleEventClick(info) {
-    console.log("Event: " + JSON.stringify(events));
     setSchedId(info.event.id);
-    console.log("sched id: " + schedId);
     openViewModal();
   };
   useEffect(()=>{
@@ -72,7 +70,6 @@ function Home() {
           plugins={[dayGridPlugin]}
           initialView='dayGridMonth'
           events={events}
-
           eventContent={renderEventContent}
           eventClick={handleEventClick}
         />

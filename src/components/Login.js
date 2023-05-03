@@ -30,7 +30,7 @@ const Login = (props) => {
       if(res.data !== 0){
         getAlert("success", "Success!");
         localStorage.setItem("isLoggedIn", "1");
-        console.log("Local Storage: " + localStorage.getItem("isLoggedIn"));
+        localStorage.setItem("userId", res.data[0].usr_id);
         setTimeout(()=>{window.location.reload();}, 1250);
       }else{
         setTimeout(() => {setShowInvalid(true);}, 300);

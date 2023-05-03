@@ -35,17 +35,16 @@ function ViewSchedule(props) {
   return (
     <>
       <Modal show={show} onHide={onHide}>
-        <Modal.Header>{schedule.sched_title}</Modal.Header>
+        <Modal.Header><h3>{schedule.sched_title}</h3></Modal.Header>
         <Modal.Body>
-          <Container className="d-flex justify-content-between align-items-center w-50 mb-3">
-            {schedule.sched_startDate}
+          <Container className="d-flex justify-content-between align-items-center w-75 mb-3">
+            <div>{schedule.sched_startDate}</div>
             <FontAwesomeIcon icon={faArrowRight} size="lg" color="#000" />
-            {schedule.sched_endDate}
+            <div>{schedule.sched_endDate}</div>
           </Container>
           <Card border="dark">
             <Card.Body>
               {schedule.sched_description}
-
             </Card.Body>
           </Card>
 
