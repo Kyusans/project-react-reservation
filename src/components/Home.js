@@ -21,7 +21,7 @@ function Home() {
     getEvents();
     setShowReserveModal(false)
   };
-  sessionStorage.setItem("url", "http://localhost/calendar/api/");
+  sessionStorage.setItem("url", "http://localhost/reservation/api/");
 
   const getEvents = () => {
     const url = sessionStorage.getItem("url") + "schedule.php";
