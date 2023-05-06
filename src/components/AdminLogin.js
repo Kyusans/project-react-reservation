@@ -2,12 +2,14 @@ import { Button, Card, Container, FloatingLabel, Form } from "react-bootstrap";
 import AlertScript from "./AlertScript";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
   sessionStorage.setItem("url", "http://localhost/reservation/api/");
   const [empId, setEmpId] = useState("");
   const [password, setPassword] = useState("");
   const [showInvalid, setShowInvalid] = useState(false);
+  const navigateTo = useNavigate();
   //for alert
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertVariant, setAlertVariant] = useState("");
@@ -29,9 +31,9 @@ const AdminLogin = () => {
       setShowInvalid(false);
       if(res.data !== 0){
         getAlert("success", "Success!");
-        localStorage.setItem("isLoggedIn", "1");
-        localStorage.setItem("userId", res.data[0].usr_id);
-        // navigate to dashboard
+        sessionStorage.setItem("isAdminLoggedIn", "1");
+        // sessionStorage.setItem("userId", res.data[0].usr_id);
+        navigateTo("/admin/dashboard");
       }else{
         setTimeout(() => {setShowInvalid(true);}, 300);
       }
