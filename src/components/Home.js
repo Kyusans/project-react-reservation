@@ -6,11 +6,12 @@ import axios from 'axios';
 import ReservationForm from './ReservationForm';
 import ViewSchedule from './ViewSchedule';
 import moment from "moment";
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [schedId, setSchedId] = useState("");
   const [events, setEvents] = useState([]);
-
+  const navigateTo = useNavigate();
   const [showViewModal, setShowViewModal] = useState(false);
   const openViewModal = () => {setShowViewModal(true);}
   const hideViewModal = () => {setShowViewModal(false);}
@@ -21,7 +22,6 @@ function Home() {
     getEvents();
     setShowReserveModal(false)
   };
-  sessionStorage.setItem("url", "http://localhost/reservation/api/");
 
   const getEvents = () => {
     const url = sessionStorage.getItem("url") + "schedule.php";
@@ -48,8 +48,10 @@ function Home() {
     openViewModal();
   };
   useEffect(()=>{
-    getEvents();
-  }, []);
+    sessionStorage.setItem("url", "http://localhost/reservation/api/");
+    sessionStorage.getItem("isAdminLoggedIn") === "1" ? navigateTo("/admin/dashboard") : getEvents();
+    
+  }, [navigateTo]);
 
   function renderEventContent(eventInfo) {
     return (

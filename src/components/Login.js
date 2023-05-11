@@ -27,14 +27,19 @@ const Login = (props) => {
     axios({url: url, data: formData, method: "post"})
     .then((res)=>{
       setShowInvalid(false);
-      if(res.data !== 0){
+      if(res.data === 0){
+        setTimeout(() => {setShowInvalid(true);}, 300);
+      }else if(res.data[0].usr_level === "100"){
+        getAlert("success", "Welcome back Admin!");
+        sessionStorage.setItem("isAdminLoggedIn", "1");
+        setTimeout(()=>{window.location.reload();}, 1250);
+      }else{
         getAlert("success", "Success!");
         localStorage.setItem("isLoggedIn", "1");
         localStorage.setItem("userId", res.data[0].usr_id);
         setTimeout(()=>{window.location.reload();}, 1250);
-      }else{
-        setTimeout(() => {setShowInvalid(true);}, 300);
       }
+
     })
     .catch((err)=>{
       getAlert("There was an error: " + err);
@@ -71,7 +76,7 @@ const Login = (props) => {
                     {showInvalid && <Form.Text className="text-danger">Invalid login credentials</Form.Text>}
                   </Form.Group><hr />
                   <Button className="button-large mt-2 big-height" variant="outline-success" onClick={login}>Login</Button>
-                  <Button className="button-large mt-3 big-height" variant="outline-danger" style={{ width: "75px" }} onClick={handleOnHide}>Back</Button>
+                  <Button className="button-large mt-3 big-height" variant="outline-danger"  onClick={handleOnHide}>Back</Button>
                 </Card.Body>
               </Card>
             </Form>
