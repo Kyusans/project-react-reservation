@@ -19,8 +19,7 @@ code {
 
 .navbar-light .navbar-brand,
 .navbar-light .navbar-nav .nav-link {
-  color: white;
-
+  color: white
 }
 
 .nav-background{
@@ -133,5 +132,5 @@ code {
 
 .link-text{
   color: white !important;
-  margin-right: 10px;
+  margin-right: 15px;
 }

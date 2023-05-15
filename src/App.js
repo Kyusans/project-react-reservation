@@ -8,8 +8,8 @@ import AdminDashboard from "./components/AdminDashboard";
 function App() {
   return (
     <>
-      <NavigationBar />
       <Router>
+        <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/login" element={<Login />}/>

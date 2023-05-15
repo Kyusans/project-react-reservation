@@ -8,7 +8,6 @@ import AlertScript from "./AlertScript";
 const ReservationForm = (props) => {
   const {show, onHide} = props;
   const [title, setTitle] = useState("");
-  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -41,6 +40,7 @@ const ReservationForm = (props) => {
   }
   const addSchedule = () =>{
     const url = sessionStorage.getItem("url") + "schedule.php";
+    const name = localStorage.getItem("name");
     const jsonData = {name: name, description: description, startDate: startDate, endDate: endDate, title: title, color: color}
     const formData = new FormData();
     formData.append("json", JSON.stringify(jsonData));
@@ -64,7 +64,6 @@ const ReservationForm = (props) => {
   function handleOnHide(){
     setShowAlert(false);
     setTitle("");
-    setName("");
     setDescription("");
     setValidated(false);
     onHide();
@@ -83,12 +82,6 @@ const ReservationForm = (props) => {
         <Form.Group className="mt-1 mb-3">
             <FloatingLabel label="Schedule Title">
               <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Schedule Title" autoFocus required/>
-              <Form.Control.Feedback type="invalid">This field is required</Form.Control.Feedback>
-            </FloatingLabel>
-          </Form.Group>
-          <Form.Group className="mt-1 mb-3">
-            <FloatingLabel label="Name">
-              <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required/>
               <Form.Control.Feedback type="invalid">This field is required</Form.Control.Feedback>
             </FloatingLabel>
           </Form.Group>

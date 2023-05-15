@@ -37,7 +37,7 @@ const AdminDashboard = () => {
       });
   };
   useEffect(() => {
-    if (sessionStorage.getItem("isAdminLoggedIn") === "1") {
+    if (localStorage.getItem("isAdminLoggedIn") === "1") {
       const getEmployee = () => {
         const url = sessionStorage.getItem("url") + "users.php";
         const formData = new FormData();

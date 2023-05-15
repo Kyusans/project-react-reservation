@@ -6,18 +6,23 @@ import axios from 'axios';
 import ReservationForm from './ReservationForm';
 import ViewSchedule from './ViewSchedule';
 import moment from "moment";
-import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [schedId, setSchedId] = useState("");
   const [events, setEvents] = useState([]);
-  const navigateTo = useNavigate();
   const [showViewModal, setShowViewModal] = useState(false);
   const openViewModal = () => {setShowViewModal(true);}
   const hideViewModal = () => {setShowViewModal(false);}
 
   const [showReserveModal, setShowReserveModal] = useState(false);
-  const openReserveModal = () => {setShowReserveModal(true)};
+  const handleOpenReserveModal = () =>{
+    if(localStorage.getItem("name") !== "") {
+      setShowReserveModal(true);
+    }else{
+      alert("You need to login first");
+    }
+  }
+
   const hideReserveModal = () => {
     getEvents();
     setShowReserveModal(false)
@@ -49,9 +54,8 @@ function Home() {
   };
   useEffect(()=>{
     sessionStorage.setItem("url", "http://localhost/reservation/api/");
-    sessionStorage.getItem("isAdminLoggedIn") === "1" ? navigateTo("/admin/dashboard") : getEvents();
-    
-  }, [navigateTo]);
+    getEvents();
+  }, []);
 
   function renderEventContent(eventInfo) {
     return (
@@ -66,7 +70,7 @@ function Home() {
       <Container className="mt-3">
         <Container className="d-flex justify-content-between align-items-center">
           <h1>To-Do List</h1>
-          <Button onClick={openReserveModal}>Add Reservation</Button>
+          <Button onClick={handleOpenReserveModal}>Add Reservation</Button>
         </Container>
         <FullCalendar
           plugins={[dayGridPlugin]}
