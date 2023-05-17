@@ -102,7 +102,7 @@ code {
   margin: 0 auto;
 }
 
-.minimum-height{
+.min-sz{
   min-height: 200px;
   min-width: 200px;
 }
