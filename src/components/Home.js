@@ -33,19 +33,22 @@ function Home() {
     const url = sessionStorage.getItem("url") + "schedule.php";
     const jsonData = {reserveNum};
     const formData = new FormData();
-    formData.append("operation", "getSchedule");
+    const operation = reserveNum === 1 ? "getVehicleReservation" : "getRoomReservation";
+    formData.append("operation", operation);
     formData.append("json", JSON.stringify(jsonData));
     axios({ url: url, data: formData, method: "post" })
       .then((res) => {
-        console.log(JSON.stringify(res.data)); 
-        const eventsData = res.data.map((items) => ({
-          id: items.sched_id,
-          title: items.sched_title,
-          start: items.sched_startDate,
-          end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
-          color: items.sched_color,
-        }));
-        setEvents(eventsData);
+        console.log(JSON.stringify(res.data));
+        if(res.data !== 0){
+          const eventsData = res.data.map((items) => ({
+            id: items.sched_id,
+            title: items.sched_title,
+            start: items.sched_startDate,
+            end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
+            color: items.sched_color,
+          }));
+          setEvents(eventsData);
+        }
       })
       .catch((err) => {
         alert("There was an unexpected error: " + err);
