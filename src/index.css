@@ -134,3 +134,7 @@ code {
   color: white !important;
   margin-right: 15px;
 }
+
+.table-padding {
+  padding: 30px;
+}
