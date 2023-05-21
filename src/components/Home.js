@@ -8,7 +8,7 @@ import ViewSchedule from './ViewSchedule';
 import moment from "moment";
 
 function Home() {
-  const [reserveNum, setReserveNum] = useState(0);
+  const [reserveNum, setReserveNum] = useState(1);
   const [schedId, setSchedId] = useState("");
   const [events, setEvents] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -29,41 +29,35 @@ function Home() {
     setShowReserveModal(false)
   };
 
-  const getEvents = () => {
+  const getEvents = (reserveNum) => {
     const url = sessionStorage.getItem("url") + "schedule.php";
-    const jsonData = {reserveNum};
+    const jsonData = {reserveType: reserveNum};
     const formData = new FormData();
-    const operation = reserveNum === 1 ? "getVehicleReservation" : "getRoomReservation";
-    formData.append("operation", operation);
+    formData.append("operation", "getReservation");
     formData.append("json", JSON.stringify(jsonData));
     axios({ url: url, data: formData, method: "post" })
-      .then((res) => {
-        console.log(JSON.stringify(res.data));
-        if(res.data !== 0){
-          const eventsData = res.data.map((items) => ({
-            id: items.sched_id,
-            title: items.sched_title,
-            start: items.sched_startDate,
-            end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
-            color: items.sched_color,
-          }));
-          setEvents(eventsData);
-        }
-      })
-      .catch((err) => {
-        alert("There was an unexpected error: " + err);
-      });
+    .then((res) => {
+      console.log(JSON.stringify(res.data));
+      if(res.data !== 0){
+        const eventsData = res.data.map((items) => ({
+          id: items.sched_id,
+          title: items.sched_title,
+          start: items.sched_startDate,
+          end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
+          color: items.sched_color,
+        }));
+        setEvents(eventsData);
+      }
+    })
+    .catch((err) => {
+      alert("There was an unexpected error: " + err);
+    });
   };
   
   function handleEventClick(info) {
     setSchedId(info.event.id);
     openViewModal();
   };
-  
-  function handleReservationView(num){
-    setReserveNum(num);
-    getEvents();
-  }
 
   function renderEventContent(eventInfo) {
     return (
@@ -81,14 +75,12 @@ function Home() {
     <>
       <Container className="mt-3">
         <Dropdown className="text-center">
-          <Dropdown.Toggle>Reservations</Dropdown.Toggle>
+          <Dropdown.Toggle>{reserveNum === 1 ? "Vehicle Reservation" : "Room Reservation"}</Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => handleReservationView(1)}>Vehicle Reservation</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleReservationView(2)}>Room Reservation</Dropdown.Item>
+            <Dropdown.Item onClick={() => getEvents(1)}>Vehicle Reservation</Dropdown.Item>
+            <Dropdown.Item onClick={() => getEvents(2)}>Room Reservation</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        {reserveNum === 0 ? <h1>Pick a reservation first</h1>:
-        (<>
           <Container className="d-flex justify-content-between align-items-center">
             <h1>To-Do List</h1>
             <Button onClick={handleOpenReserveModal}>Add Reservation</Button>
@@ -100,8 +92,6 @@ function Home() {
             eventContent={renderEventContent}
             eventClick={handleEventClick} 
           />
-        </>)
-        } 
       </Container>
       <ReservationForm show={showReserveModal} onHide={hideReserveModal} />
       <ViewSchedule show={showViewModal} onHide={hideViewModal} schedId={schedId} />
