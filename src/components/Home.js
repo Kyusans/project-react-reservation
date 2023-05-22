@@ -8,7 +8,7 @@ import ViewSchedule from './ViewSchedule';
 import moment from "moment";
 
 function Home() {
-  const [reserveNum, setReserveNum] = useState(1);
+  const [reserveType, setReserveType] = useState("Select Reservation");
   const [schedId, setSchedId] = useState("");
   const [events, setEvents] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -29,29 +29,31 @@ function Home() {
     setShowReserveModal(false)
   };
 
-  const getEvents = (reserveNum) => {
+  const getEvents = (num) => {
     const url = sessionStorage.getItem("url") + "schedule.php";
-    const jsonData = {reserveType: reserveNum};
+    const jsonData = { reserveType: num };
+    console.log("jsonData: ", JSON.stringify(jsonData));
     const formData = new FormData();
     formData.append("operation", "getReservation");
     formData.append("json", JSON.stringify(jsonData));
     axios({ url: url, data: formData, method: "post" })
-    .then((res) => {
-      console.log(JSON.stringify(res.data));
-      if(res.data !== 0){
-        const eventsData = res.data.map((items) => ({
-          id: items.sched_id,
-          title: items.sched_title,
-          start: items.sched_startDate,
-          end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
-          color: items.sched_color,
-        }));
-        setEvents(eventsData);
-      }
-    })
-    .catch((err) => {
-      alert("There was an unexpected error: " + err);
-    });
+      .then((res) => {
+        console.log(JSON.stringify(res.data));
+        num === 1 ? setReserveType("Vehicle reservation") : setReserveType("Room reservation"); 
+        if (res.data !== 0) {
+          const eventsData = res.data.map((items) => ({
+            id: items.sched_id,
+            title: items.sched_title,
+            start: items.sched_startDate,
+            end: moment(items.sched_endDate).add(1, "days").format("YYYY-MM-DD"),
+            color: items.sched_color,
+          }));
+          setEvents(eventsData);
+        }
+      })
+      .catch((err) => {
+        alert("There was an unexpected error: " + err);
+      });
   };
   
   function handleEventClick(info) {
@@ -73,28 +75,33 @@ function Home() {
   }, []);
   return (
     <>
+    
       <Container className="mt-3">
         <Dropdown className="text-center">
-          <Dropdown.Toggle>{reserveNum === 1 ? "Vehicle Reservation" : "Room Reservation"}</Dropdown.Toggle>
+          <Dropdown.Toggle>{reserveType}</Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={() => getEvents(1)}>Vehicle Reservation</Dropdown.Item>
             <Dropdown.Item onClick={() => getEvents(2)}>Room Reservation</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-          <Container className="d-flex justify-content-between align-items-center">
-            <h1>To-Do List</h1>
-            <Button onClick={handleOpenReserveModal}>Add Reservation</Button>
-          </Container>
-          <FullCalendar
-            plugins={[dayGridPlugin]}
-            initialView='dayGridMonth'
-            events={events}
-            eventContent={renderEventContent}
-            eventClick={handleEventClick} 
-          />
+      {reserveType !== "Select Reservation" ?  
+      <>
+        <Container className="d-flex justify-content-between align-items-center">
+          <h1>To-Do List</h1>
+          <Button onClick={handleOpenReserveModal}>Add Reservation</Button>
+        </Container>
+        <FullCalendar
+          plugins={[dayGridPlugin]}
+          initialView='dayGridMonth'
+          events={events}
+          eventContent={renderEventContent}
+          eventClick={handleEventClick} 
+        />
+      </>: <h3>No reservation selected</h3>
+      }
       </Container>
       <ReservationForm show={showReserveModal} onHide={hideReserveModal} />
-      <ViewSchedule show={showViewModal} onHide={hideViewModal} schedId={schedId} />
+      <ViewSchedule show={showViewModal} onHide={hideViewModal} schedId={schedId} /> 
     </>
   );
 }
