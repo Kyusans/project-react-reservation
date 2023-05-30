@@ -6,6 +6,7 @@ import axios from 'axios';
 import ReservationForm from './ReservationForm';
 import ViewSchedule from './ViewSchedule';
 import moment from "moment";
+import AlertScript from './AlertScript';
 
 function Home() {
   const [reserveType, setReserveType] = useState("Select Reservation");
@@ -14,7 +15,6 @@ function Home() {
   const [showViewModal, setShowViewModal] = useState(false);
   const openViewModal = () => {setShowViewModal(true);}
   const hideViewModal = () => {setShowViewModal(false);}
-
   const [showReserveModal, setShowReserveModal] = useState(false);
   const handleOpenReserveModal = () =>{
     if(localStorage.getItem("name") !== "") {
@@ -75,7 +75,6 @@ function Home() {
   }, []);
   return (
     <>
-    
       <Container className="mt-3">
         <Dropdown className="text-center">
           <Dropdown.Toggle>{reserveType}</Dropdown.Toggle>
@@ -97,7 +96,7 @@ function Home() {
           eventContent={renderEventContent}
           eventClick={handleEventClick} 
         />
-      </>: <h3>No reservation selected</h3>
+      </>: <h5 className="text-center mt-3"><AlertScript show={true} variant={"danger"} message={"Select type of reservation"} /></h5>
       }
       </Container>
       <ReservationForm show={showReserveModal} onHide={hideReserveModal} />

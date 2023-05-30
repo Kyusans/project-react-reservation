@@ -11,7 +11,6 @@ const ReservationForm = (props) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [color, setColor] = useState('blue');
   const [validated, setValidated] = useState(false); 
   //for alert
 	const [showAlert, setShowAlert] = useState(false);
@@ -41,7 +40,7 @@ const ReservationForm = (props) => {
   const addSchedule = () =>{
     const url = sessionStorage.getItem("url") + "schedule.php";
     const name = localStorage.getItem("name");
-    const jsonData = {name: name, description: description, startDate: startDate, endDate: endDate, title: title, color: color}
+    const jsonData = {name: name, description: description, startDate: startDate, endDate: endDate, title: title}
     const formData = new FormData();
     formData.append("json", JSON.stringify(jsonData));
     formData.append("operation", "addSchedule");
@@ -100,20 +99,6 @@ const ReservationForm = (props) => {
               />
               <Form.Control.Feedback type="invalid">This field is required</Form.Control.Feedback>
               </FloatingLabel>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <div className="color-dropdown">
-              <Form.Select aria-label="Default select example" value={color} onChange={(event) => setColor(event.target.value)} required>
-                <option value="">Select a color</option>
-                <option value="#000000">Black</option>
-                <option value="#ff0000">Red</option>
-                <option value="#00ff00">Green</option>
-                <option value="#0000ff">Blue</option>
-                <option value="#ffff00">Yellow</option>
-                <option value="#ffa500">Orange</option>
-                <option value="#800080">Purple</option>
-              </Form.Select>
-            </div>
           </Form.Group>
           <Form.Group>
             <Row>
