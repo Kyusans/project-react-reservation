@@ -9,7 +9,8 @@ import moment from "moment";
 import AlertScript from './AlertScript';
 
 function Home() {
-  const [reserveType, setReserveType] = useState("Select Reservation");
+  const [reserveType, setReserveType] = useState("");
+  const [reserveTypeName, setReserveTypeName] = useState("Select Reservation");  
   const [schedId, setSchedId] = useState("");
   const [events, setEvents] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -29,9 +30,9 @@ function Home() {
     setShowReserveModal(false)
   };
 
-  const getEvents = (num) => {
+  const getEvents = () => {
     const url = sessionStorage.getItem("url") + "schedule.php";
-    const jsonData = { reserveType: num };
+    const jsonData = {reserveType : reserveType};
     console.log("jsonData: ", JSON.stringify(jsonData));
     const formData = new FormData();
     formData.append("operation", "getReservation");
@@ -39,7 +40,7 @@ function Home() {
     axios({ url: url, data: formData, method: "post" })
       .then((res) => {
         console.log(JSON.stringify(res.data));
-        num === 1 ? setReserveType("Vehicle reservation") : setReserveType("Room reservation"); 
+        reserveType === "vehicle" ? setReserveTypeName("Vehicle reservation") : setReserveTypeName("Room reservation"); 
         if (res.data !== 0) {
           const eventsData = res.data.map((items) => ({
             id: items.sched_id,
@@ -55,7 +56,13 @@ function Home() {
         alert("There was an unexpected error: " + err);
       });
   };
-  
+
+  const reserveTypeSet = (type) =>{
+    console.log("ang type: " + type);
+    setReserveType(type);
+    console.log("Reserve type: " + reserveType);
+  }
+
   function handleEventClick(info) {
     setSchedId(info.event.id);
     openViewModal();
@@ -77,10 +84,10 @@ function Home() {
     <>
       <Container className="mt-3">
         <Dropdown className="text-center">
-          <Dropdown.Toggle>{reserveType}</Dropdown.Toggle>
+          <Dropdown.Toggle>{reserveTypeName}</Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => getEvents(1)}>Vehicle Reservation</Dropdown.Item>
-            <Dropdown.Item onClick={() => getEvents(2)}>Room Reservation</Dropdown.Item>
+            <Dropdown.Item onClick={() => reserveTypeSet("vehicle")}>Vehicle Reservation</Dropdown.Item>
+            <Dropdown.Item onClick={() => reserveTypeSet("room")}>Room Reservation</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       {reserveType !== "Select Reservation" ?  

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
-import { Button, Col, FloatingLabel, Form, Modal, Row} from "react-bootstrap";
+import { Button, Col, Container, FloatingLabel, Form, Modal, Row} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AlertScript from "./AlertScript";
+import AvailableRoom from "./AvailableRoom";
 
 const ReservationForm = (props) => {
   const {show, onHide} = props;
@@ -21,6 +22,9 @@ const ReservationForm = (props) => {
 		setAlertVariant(variantAlert);
 		setAlertMessage(messageAlert);
 	}
+  const [showAvailableModal, setShowAvailableModal] = useState(false);
+  const openAvailableModal = () =>{setShowAvailableModal(true);};
+  const closeAvailableModal = () =>{setShowAvailableModal(false);};
   const formValidation = (e) =>{
     const form = e.currentTarget;
     if(form.checkValidity() === false){
@@ -53,7 +57,6 @@ const ReservationForm = (props) => {
         setTimeout(() => {handleOnHide();}, 500);
       }else{
         getAlert("danger", "The selected dates conflict with an existing schedule.");
-        console.log(res.data);
       }
     })
     .catch((err)=>{
@@ -111,6 +114,9 @@ const ReservationForm = (props) => {
                 <DatePicker selected={endDate} onChange={date => setEndDate(date)} dateFormat="yyyy/MM/dd"/>
               </Col>
             </Row>     
+            <Container className="text-center mt-3">
+              <Button variant="outline-primary" onClick={openAvailableModal}>Available Room</Button>
+            </Container>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -119,6 +125,8 @@ const ReservationForm = (props) => {
         </Modal.Footer>
         </Form>
       </Modal>
+
+      <AvailableRoom onShow={showAvailableModal} onHide={closeAvailableModal} />
     </>
   );
 }
