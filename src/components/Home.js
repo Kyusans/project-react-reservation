@@ -40,7 +40,7 @@ function Home() {
     axios({ url: url, data: formData, method: "post" })
       .then((res) => {
         console.log(JSON.stringify(res.data));
-        reserveType === "vehicle" ? setReserveTypeName("Vehicle reservation") : setReserveTypeName("Room reservation"); 
+        reserveTypeName === "vehicle" ? setReserveTypeName("Vehicle reservation") : setReserveTypeName("Room reservation"); 
         if (res.data !== 0) {
           const eventsData = res.data.map((items) => ({
             id: items.sched_id,
@@ -58,9 +58,8 @@ function Home() {
   };
 
   const reserveTypeSet = (type) =>{
-    console.log("ang type: " + type);
     setReserveType(type);
-    console.log("Reserve type: " + reserveType);
+    getEvents();
   }
 
   function handleEventClick(info) {
@@ -90,7 +89,7 @@ function Home() {
             <Dropdown.Item onClick={() => reserveTypeSet("room")}>Room Reservation</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      {reserveType !== "Select Reservation" ?  
+      {reserveTypeName !== "Select Reservation" ?  
       <>
         <Container className="d-flex justify-content-between align-items-center">
           <h1>To-Do List</h1>
